@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETP4 - Unit 2A Vocabulary Quiz</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#f4f7fb; color:#06203a; padding:20px; }
+  .container { max-width:800px; margin:auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.1); }
+  h1 { text-align:center; margin-bottom:10px; }
+  .question { margin-bottom:20px; padding:10px; border-bottom:1px solid #e0e0e0; }
+  .options button { display:block; margin:5px 0; padding:8px 12px; border:none; border-radius:6px; background:#e6ecf7; cursor:pointer; text-align:left; width:100%; }
+  .options button:hover { background:#d2e3ff; }
+  .correct { background:#c8f7c5 !important; }
+  .wrong { background:#f7c5c5 !important; }
+  #nextBtn, #restartBtn { display:none; margin-top:20px; padding:10px 15px; border:none; background:#2563eb; color:white; border-radius:6px; cursor:pointer; }
+  #score { font-weight:bold; text-align:center; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Vocabulary Quiz – Unit 2A</h1>
+<p>Choose the correct English word for each Hungarian meaning.</p>
+<div id="quiz"></div>
+<button id="nextBtn" onclick="nextQuestion()">Next</button>
+<div id="score"></div>
+<button id="restartBtn" onclick="restart()">Restart</button>
+</div>
+
+<script>
+const questions = [
+  {hun:"kalitka, ketrec", correct:"cage", options:["escape","cage","keypad"]},
+  {hun:"megérteni", correct:"get it", options:["get up","get it","guess"]},
+  {hun:"szabadulószoba", correct:"escape room", options:["escape room","digital clock","riddle"]},
+  {hun:"nagy, álló óra", correct:"grandfather clock", options:["digital clock","grandfather clock","riddle"]},
+  {hun:"olvas a sorok között", correct:"read between the lines", options:["read between the lines","key in","manage"]},
+  {hun:"nyom", correct:"clue", options:["clue","line","opinion"]},
+  {hun:"kinyit", correct:"unlock", options:["manage","unlock","escape"]},
+  {hun:"bizonyos", correct:"certain", options:["certain","possible","incredible"]},
+  {hun:"tartani ki!", correct:"Hang on!", options:["Hang on!","Hurry up!","Good job!"]},
+  {hun:"türelmetlen", correct:"Hurry up!", options:["Hang on!","Good job!","Hurry up!"]},
+  {hun:"Egyetértek.", correct:"I agree.", options:["I give up.","I agree.","I don’t get it."]},
+  {hun:"feladom", correct:"I give up.", options:["I give up.","I get it!","I don’t think so."]},
+  {hun:"Nem hiszem.", correct:"I don’t think so.", options:["I don’t think so.","I get it!","That’s incredible!"]},
+  {hun:"Értem!", correct:"I’ve got it!", options:["I’ve got it!","That’s incredible!","I give up."]},
+  {hun:"Hihetetlen!", correct:"That’s incredible!", options:["That’s incredible!","Good job!","Hang on!"]},
+  {hun:"billentyűzet", correct:"keypad", options:["keypad","key in","digital clock"]},
+  {hun:"lehetőség", correct:"possibility", options:["way","possibility","clue"]},
+  {hun:"digitális", correct:"digital (clock)", options:["digital (clock)","grandfather clock","escape"]},
+  {hun:"megmenekülni", correct:"escape", options:["escape","manage","guess"]},
+  {hun:"vélemény", correct:"opinion", options:["opinion","way","clue"]}
+];
+
+let current = 0;
+let score = 0;
+
+const quizDiv = document.getElementById("quiz");
+const nextBtn = document.getElementById("nextBtn");
+const scoreDiv = document.getElementById("score");
+const restartBtn = document.getElementById("restartBtn");
+
+function loadQuestion() {
+  quizDiv.innerHTML = "";
+  let q = questions[current];
+  let qDiv = document.createElement("div");
+  qDiv.className = "question";
+  qDiv.innerHTML = `<b>${current+1}. ${q.hun}</b>`;
+  let optsDiv = document.createElement("div");
+  optsDiv.className = "options";
+  q.options.sort(() => Math.random() - 0.5); // shuffle
+  q.options.forEach(opt => {
+    let btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(btn, q.correct);
+    optsDiv.appendChild(btn);
+  });
+  qDiv.appendChild(optsDiv);
+  quizDiv.appendChild(qDiv);
+}
+
+function checkAnswer(btn, correctAns) {
+  const buttons = quizDiv.querySelectorAll("button");
+  buttons.forEach(b => b.disabled = true);
+  if (btn.textContent === correctAns) {
+    btn.classList.add("correct");
+    score++;
+  } else {
+    btn.classList.add("wrong");
+    buttons.forEach(b => {
+      if (b.textContent === correctAns) b.classList.add("correct");
+    });
+  }
+  nextBtn.style.display = "inline-block";
+}
+
+function nextQuestion() {
+  current++;
+  nextBtn.style.display = "none";
+  if (current < questions.length) {
+    loadQuestion();
+  } else {
+    showScore();
+  }
+}
+
+function showScore() {
+  quizDiv.innerHTML = "";
+  nextBtn.style.display = "none";
+  scoreDiv.innerHTML = `Final score: ${score} / ${questions.length} (${Math.round(score/questions.length*100)}%)`;
+  restartBtn.style.display = "inline-block";
+}
+
+function restart() {
+  current = 0;
+  score = 0;
+  restartBtn.style.display = "none";
+  scoreDiv.innerHTML = "";
+  loadQuestion();
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
